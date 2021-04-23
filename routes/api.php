@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:api')->get('/userApproval', function (Request $request) {
+Route::post('/userApproval', function (Request $request) {
+    // dd($request->approved);
     $user_id = $request->input('id');
     if (empty($user_id)) {
         return response()->json([
@@ -26,12 +28,14 @@ Route::middleware('auth:api')->get('/userApproval', function (Request $request) 
         ]);
     }
 
-    $user = User::where('id',$user_id)->get();
+    // $user = User::where('id',$user_id)->get();
+    $user = User::find($user_id);
     if (empty($user)) {
         return response()->json([
             'status' => 'failed'
         ]);
     }
+    // dd($user);
     $user->approved = $request->approved;
     $user->save();
 

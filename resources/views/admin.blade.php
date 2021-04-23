@@ -39,14 +39,15 @@
                                                 <q-td key="approved" :props="props">
                                                     <div class="text-pre-wrap">{{ approvedValue(props.row.approved) }}</div>
                                                     <q-popup-edit 
-                                                        :value=approvedValue(props.row.approved) 
                                                         v-model="props.row.approved" 
                                                         buttons
+                                                        @cancel="(val, initval) => updateApprovalValue(props.row, initval)"
+                                                        @save="(val, initval) => updateApprovalValue(props.row, val)"
                                                     >
                                                         <q-toggle
                                                             :label="`Approved`"
                                                             :value="approvedValue(props.row.approved)"
-                                                            v-model="props.row.approved"
+                                                            @input="(val, evt) => updateUserApproval(props.row, val, evt)"
                                                         />
                                                     </q-popup-edit>
                                                 </q-td>
@@ -65,6 +66,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.10/dist/quasar.umd.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
     /*
       Example kicking off the UI. Obviously, adapt this to your specific needs.
@@ -84,11 +86,25 @@
         },
         methods: {
             approvedValue (val) {
-                return val =='1'
+                console.log(val == 1)
+                return val == 1
             },
             updateApprovalValue (row, val) {
-                console.log(row, val)
+                const res = axios.post('/api/userApproval', {
+                    id: row.id,
+                    approved: val
+                });
+                // console.log(row, val)
                 // make an axios request to update user
+            },
+            updateUserApproval (row, val, evt) {
+                console.log(val, evt)
+                this.users.map(x => {
+                    if (row.id === x.id) {
+                        x.appoved = val
+                        console.log(x, row)
+                    }
+                })
             },
         },
         // ...etc
