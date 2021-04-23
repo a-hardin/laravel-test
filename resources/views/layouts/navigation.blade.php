@@ -15,12 +15,16 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @can('viewAdmin', 'App\User')
                     <x-nav-link :href="route('admin')" :active="request()->routeIs('admin')">
                         {{ __('Admin') }}
                     </x-nav-link>
+                    @endcan
+                    @can('viewApproved', 'App\User')
                     <x-nav-link :href="route('approved')" :active="request()->routeIs('approved')">
                         {{ __('Approved') }}
                     </x-nav-link>
+                    @endcan
                     <x-nav-link :href="route('unapproved')" :active="request()->routeIs('unapproved')">
                         {{ __('Unapproved') }}
                     </x-nav-link>
