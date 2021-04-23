@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
@@ -21,6 +22,7 @@ class UserSeeder extends Seeder
             'name' => 'Iteris',
             'email' => 'iteris@gmail.com',
             'password' => Hash::make('password'),
+            'api_token' => Str::random(80),
             'role' => 'admin',
             'approved' => true
         ]);
@@ -28,6 +30,7 @@ class UserSeeder extends Seeder
             'name' => 'user1',
             'email' => 'user1@gmail.com',
             'password' => Hash::make('password'),
+            'api_token' => Str::random(80),
             'role' => 'viewer',
             'approved' => false
         ]);
@@ -35,6 +38,7 @@ class UserSeeder extends Seeder
             'name' => 'user2',
             'email' => 'user2@gmail.com',
             'password' => Hash::make('password'),
+            'api_token' => Str::random(80),
             'role' => 'viewer',
             'approved' => false
         ]);
@@ -42,6 +46,7 @@ class UserSeeder extends Seeder
             'name' => 'user3',
             'email' => 'user3@gmail.com',
             'password' => Hash::make('password'),
+            'api_token' => Str::random(80),
             'role' => 'viewer',
             'approved' => false
         ]);
@@ -49,6 +54,7 @@ class UserSeeder extends Seeder
             'name' => 'user4',
             'email' => 'user4@gmail.com',
             'password' => Hash::make('password'),
+            'api_token' => Str::random(80),
             'role' => 'viewer',
             'approved' => false
         ]);

@@ -43,8 +43,7 @@
                                                     >
                                                         <q-toggle
                                                             :label="`Approved`"
-                                                            :value="approvedValue(props.row.approved)"
-                                                            @input="(val, evt) => updateUserApproval(props.row, val, evt)"
+                                                            v-model="props.row.approved"
                                                         />
                                                     </q-popup-edit>
                                                 </q-td>
@@ -83,27 +82,15 @@
         },
         methods: {
             approvedValue (val) {
-                console.log(val == 1)
                 return val == 1
             },
             updateApprovalValue (row, val) {
                 const res = axios.post('/api/userApproval', {
                     id: row.id,
-                    approved: val
+                    approved: val,
+                    api_token: row.api_token
                 });
-                // console.log(row, val)
-                // make an axios request to update user
-            },
-            updateUserApproval (row, val, evt) {
-                console.log(val, evt)
-                this.users.map(x => {
-                    if (row.id === x.id) {
-                        x.appoved = val
-                        console.log(x, row)
-                    }
-                })
             },
         },
-        // ...etc
       })
 </script>
