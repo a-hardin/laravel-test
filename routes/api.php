@@ -20,6 +20,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:api')->post('/userApproval', function (Request $request) {
+    if (Auth::user()->cannot('viewAdmin', 'App\User')) {
+        return 'Unauthorized';
+    }
     $user_id = $request->input('id');
 
     if (empty($user_id)) {

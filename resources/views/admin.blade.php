@@ -1,6 +1,7 @@
 
 <script>
-    var users = @json($users);;
+    var users = @json($users);
+    var current_user = @json($current_user);
 </script>
 
 <x-app-layout>
@@ -88,7 +89,7 @@
                 const res = axios.post('/api/userApproval', {
                     id: row.id,
                     approved: val,
-                    api_token: row.api_token
+                    api_token: current_user.api_token
                 });
             },
         },
