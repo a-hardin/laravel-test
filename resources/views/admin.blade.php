@@ -20,33 +20,43 @@
                             <template>
                                 <div class="q-pa-md">
                                     <q-table
-                                    title="Treats"
+                                    title="User Approval"
                                     :data="users"
                                     :columns="userColumns"
                                     row-key="name"
                                     binary-state-sort
+                                    :loading="loadingApprovedUsers"
                                     >
+                                        <template v-slot:header="props">
+                                            <q-tr :props="props">
+                                                <q-th key="approved" >
+                                                    Approved
+                                                </q-th>
+                                                <q-th
+                                                    v-for="col in props.cols"
+                                                    :key="col.name"
+                                                    :props="props"
+                                                >
+                                                    {{ col.label }}
+                                                </q-th>
+                                            </q-tr>
+                                        </template>
                                         <template v-slot:body="props">
                                             <q-tr :props="props">
-                                                <q-td key="name" :props="props">
-                                                    {{ props.row.name }}
+                                                <q-td auto-width>
+                                                    <q-toggle
+                                                        v-model="props.row.approved"
+                                                        :true-value="1"
+                                                        :false-value="0"
+                                                        @input="(val) => updateApprovalValue(props.row, val)"
+                                                    />
                                                 </q-td>
-                                                <q-td key="email" :props="props">
-                                                    {{ props.row.email }}
-                                                </q-td>
-                                                <q-td key="approved" :props="props">
-                                                    <div class="text-pre-wrap">{{ approvedValue(props.row.approved) }}</div>
-                                                    <q-popup-edit 
-                                                        v-model="props.row.approved" 
-                                                        buttons
-                                                        @cancel="(val, initval) => updateApprovalValue(props.row, initval)"
-                                                        @save="(val, initval) => updateApprovalValue(props.row, val)"
-                                                    >
-                                                        <q-toggle
-                                                            :label="`Approved`"
-                                                            v-model="props.row.approved"
-                                                        />
-                                                    </q-popup-edit>
+                                                <q-td
+                                                    v-for="col in props.cols"
+                                                    :key="col.name"
+                                                    :props="props"
+                                                >
+                                                    {{ col.value }}
                                                 </q-td>
                                             </q-tr>
                                         </template>
@@ -75,10 +85,10 @@
           return {
             userColumns: [
                 { name: 'name', align: 'center', label: 'Name', field: 'name', sortable: true },
-                { name: 'email', align: 'center', label: 'Email', field: 'email', sortable: true },
-                { name: 'approved', align: 'center', label: 'Approved', field: 'approved', sortable: true }
+                { name: 'email', align: 'center', label: 'Email', field: 'email', sortable: true }
             ],
-            users: users
+            users: users,
+            loadingApprovedUsers: false
           }
         },
         methods: {
@@ -86,12 +96,29 @@
                 return val == 1
             },
             updateApprovalValue (row, val) {
+                this.loadingApprovedUsers = true
                 const res = axios.post('/api/userApproval', {
                     id: row.id,
                     approved: val,
                     api_token: current_user.api_token
+                }).then(response => {
+                    if (response.data.status === 'success') {
+                        this.showNotify('Approval updated', 'green')
+                    } else {
+                        this.showNotify('Failed approval update', 'red')
+                    }
+                    this.loadingApprovedUsers = false
+                }).catch(error => {
+                    this.showNotify(error, 'red')
+                    this.loadingApprovedUsers = false
                 });
             },
+            showNotify (message, color) {
+                this.$q.notify({
+                    message: message,
+                    color: color
+                })
+            }
         },
       })
 </script>
